@@ -1,0 +1,5 @@
+fastapi==0.65.0
+uvicorn==0.13.4
+sqlalchemy==1.4.15
+sqlalchemy-utils==0.37.5
+alembic==1.6.5
