@@ -4,11 +4,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.routers import user
+from api.core.routers import user, room
 
 api = FastAPI()
 
 api.include_router(user.router)
+api.include_router(room.router)
 
 origins = ['*']
 

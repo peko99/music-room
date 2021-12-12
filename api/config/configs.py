@@ -3,7 +3,7 @@
 
 from functools import lru_cache
 
-from config import api, database
+from api.config import api, database
 
 
 @lru_cache()

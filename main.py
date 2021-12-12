@@ -3,8 +3,8 @@
 
 import uvicorn
 
-from core import api
-from config.configs import get_api_config
+from api.core import api
+from api.config.configs import get_api_config
 
 
 def main():
