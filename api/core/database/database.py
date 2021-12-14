@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from config.configs import get_database_config
+from api.config.configs import get_database_config
 
 
 def get_database_url() -> str:

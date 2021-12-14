@@ -1,7 +1,7 @@
 # Copyright 2021 Group 21 @ PI (120)
 
 
-from core.database.database import SessionLocal
+from api.core.database.database import SessionLocal
 
 
 def get_db():

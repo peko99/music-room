@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from core.crud import crud_user
-from dependencies import get_db
-from core.schemas import User, UserCreate, UserUpdate
+from api.core.crud import crud_user
+from api.dependencies import get_db
+from api.core.schemas import User, UserCreate, UserUpdate
 
 
 router = APIRouter(
@@ -40,9 +40,7 @@ async def create_user(
 
 
 @router.get('', response_model=List[User])
-async def get_users(
-    db: Session = Depends(get_db)
-) -> Any:
+async def get_users(db: Session = Depends(get_db)) -> Any:
     return crud_user.get_all(db=db)
 
 
@@ -96,9 +94,13 @@ async def edit_user(
             detail=f'User with username {user_in.username} already exists!'
         )
 
-    updated_user = crud_user.update(db_obj=user, obj_in=user_in, db=db)
-    
-    return updated_user
+    try:
+        updated_user = crud_user.update(db_obj=user, obj_in=user_in, db=db)
+    except IntegrityError as error:
+        db.rollback()
+        raise Exception(error)
+    else:
+        return updated_user
 
 
 @router.delete('/{id_}', response_model=User)
