@@ -13,5 +13,8 @@ class CRUDRoom(CRUDBase[Room, RoomCreate, RoomUpdate]):
     def get_by_host_id(self, *, host_id: int, db: Session) -> Room:
         return db.query(self.model).filter(self.model.host_id == host_id).first()
 
+    def get_by_code(self, *, code: str, db: Session) -> Room:
+        return db.query(self.model).filter(self.model.code == code).first()
+
 
 crud_room = CRUDRoom(Room)

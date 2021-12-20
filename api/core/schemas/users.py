@@ -8,12 +8,18 @@ from pydantic import BaseModel, validator
 
 class UserBase(BaseModel):
     username: Optional[str]
+    room_code: Optional[str]
 
     @validator('username')
     def username_form(cls, value_in):
         if not re.match(f'^[a-zA-Z0-9-_]+$', value_in):
             raise ValueError('Username has to use only alphanumeric symbols, hyphen and dash!')
         return value_in
+
+    # @validator('room_code')
+    # def room_code_form(cls, value_in):
+    #     assert value_in.isalnum(), 'Room code is alphanumeric'
+    #     return value_in
 
 
 class UserCreate(UserBase):

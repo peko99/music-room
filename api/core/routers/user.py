@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from api.core.crud import crud_user
+from api.core.crud import crud_user, crud_room
 from api.dependencies import get_db
 from api.core.schemas import User, UserCreate, UserUpdate
 
@@ -19,10 +19,7 @@ router = APIRouter(
 
 
 @router.post('', response_model=User)
-async def create_user(
-    user_in: UserCreate,
-    db: Session = Depends(get_db)
-) -> Any:
+async def create_user(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
     check_username = crud_user.get_by_username(username=user_in.username, db=db)
     if check_username:
         raise HTTPException(
@@ -60,10 +57,7 @@ async def get_user_by_id(
 
 
 @router.get('/username/{username}', response_model=User)
-async def get_user_by_username(
-    username: str,
-    db: Session = Depends(get_db)
-) -> Any:
+async def get_user_by_username(username: str, db: Session = Depends(get_db)) -> Any:
     user = crud_user.get_by_username(username=username, db=db)
     if not user:
         raise HTTPException(
@@ -104,10 +98,7 @@ async def edit_user(
 
 
 @router.delete('/{id_}', response_model=User)
-async def delete_user(
-    id_: int,
-    db: Session = Depends(get_db)
-) -> Any:
+async def delete_user(id_: int, db: Session = Depends(get_db)) -> Any:
     user = crud_user.get(id_=id_, db=db)
     if not user:
         raise HTTPException(
@@ -116,3 +107,58 @@ async def delete_user(
         )
     
     return crud_user.delete(id_=id_, db=db)
+
+
+@router.put('/{id_}/room-code/{code}', response_model=User)
+async def join_room(
+    id_: int,
+    code: str,
+    db: Session = Depends(get_db)
+) -> Any:
+    user = crud_user.get(id_=id_, db=db)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail='User not found!'
+        )
+
+    room = crud_room.get_by_code(code=code, db=db)
+    if not room:
+        raise HTTPException(
+            status_code=404,
+            detail='Room not found!'
+        )
+    
+    try:
+        joined_user = crud_user.join_room(user_in=user, room_code=code, db=db)
+    except IntegrityError as error:
+        db.rollback()
+        raise Exception(error)
+    else:
+        return joined_user
+
+
+@router.put('/{id_}/leave-room', response_model=User)
+async def leave_room(id_: int, db: Session = Depends(get_db)) -> Any:
+    user = crud_user.get(id_=id_, db=db)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail='User not found!'
+        )
+
+    room = crud_room.get_by_code(code=user.room_code, db=db)
+    if not room:
+        raise HTTPException(
+            status_code=404,
+            detail='Room not found!'
+        )
+    
+    try:
+        updated_user = crud_user.leave_room(user_in=user, db=db)
+    except IntegrityError as error:
+        db.rollback()
+        raise Exception(error)
+    else:
+        return updated_user
+    
