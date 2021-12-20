@@ -7,8 +7,9 @@ from pydantic import BaseModel
 
 class RoomBase(BaseModel):
     host_id: Optional[int]
+    code: Optional[str]
     number_of_votes: Optional[int]
-    potential: Optional[str]
+    guests_can_pause: Optional[bool]
 
 
 class RoomCreate(RoomBase):
@@ -21,7 +22,6 @@ class RoomUpdate(RoomBase):
 
 
 class Room(RoomBase):
-    id: int
 
     class Config:
         orm_mode = True

@@ -1,6 +1,8 @@
 # Copyright 2021 Group 21 @ PI (120)
 
 
+import random
+import string
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -23,6 +25,7 @@ async def create_room(
     room_in: RoomCreate,
     db: Session = Depends(get_db)
 ) -> Any:
+    room_in.code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     try:
         created_room = crud_room.create(obj_in=room_in, db=db)
     except IntegrityError as error:
@@ -33,16 +36,16 @@ async def create_room(
 
 
 @router.get('', response_model=List[Room])
-async def get_rooms(db: Session = Depends(get_db)) -> Any:
+async def get_all_rooms(db: Session = Depends(get_db)) -> Any:
     return crud_room.get_all(db=db)
 
 
-@router.get('/id/{id_}', response_model=Room)
-async def get_room_by_id(
-    id_: int,
+@router.get('/code/{code}', response_model=Room)
+async def get_room_by_code(
+    code: str,
     db: Session = Depends(get_db)
 ) -> Any:
-    room = crud_room.get(id_=id_, db=db)
+    room = crud_room.get_by_code(code=code, db=db)
     if not room:
         raise HTTPException(
             status_code=404,
@@ -67,13 +70,13 @@ async def get_room_by_host_id(
     return room
 
 
-@router.put('/{id_}', response_model=Room)
+@router.put('/{code}', response_model=Room)
 async def update_room(
-    id_: int,
+    code: str,
     room_in: RoomUpdate,
     db: Session = Depends(get_db)
 ) -> Any:
-    room = crud_room.get(id_=id_, db=db)
+    room = crud_room.get_by_code(code=code, db=db)
     if not room:
         raise HTTPException(
             status_code=404,
@@ -89,16 +92,16 @@ async def update_room(
         return updated_room
 
 
-@router.delete('/{id_}', response_model=Room)
+@router.delete('/{code}', response_model=Room)
 async def delete_room(
-    id_: int,
+    code: str,
     db: Session = Depends(get_db)
 ) -> Any:
-    room = crud_room.get(id_=id_, db=db)
+    room = crud_room.get_by_code(code=code, db=db)
     if not room:
         raise HTTPException(
             status_code=404,
             detail='Room not found!'
         )
     
-    return crud_room.delete(id_=id_, db=db)
+    return crud_room.delete(id_=room.code, db=db)
