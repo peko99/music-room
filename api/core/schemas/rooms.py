@@ -13,7 +13,6 @@ class RoomBase(BaseModel):
 
 
 class RoomCreate(RoomBase):
-    host_id: int
     number_of_votes: int
 
 

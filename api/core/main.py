@@ -3,13 +3,15 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
-from api.core.routers import user, room
+from api.core.routers import user, room, spotify
 
 api = FastAPI()
 
 api.include_router(user.router)
 api.include_router(room.router)
+api.include_router(spotify.router)
 
 origins = ['*']
 
@@ -19,6 +21,7 @@ api.add_middleware(
     allow_methods=['*'],
     allow_headers=['*']
 )
+api.add_middleware(SessionMiddleware, secret_key="token")
 
 @api.get('/')
 async def root ():

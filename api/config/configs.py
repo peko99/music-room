@@ -3,7 +3,7 @@
 
 from functools import lru_cache
 
-from api.config import api, database
+from api.config import api, database, spotify
 
 
 @lru_cache()
@@ -14,3 +14,8 @@ def get_api_config():
 @lru_cache()
 def get_database_config():
     return database.config
+
+
+@lru_cache()
+def get_spotify_config():
+    return spotify.config
