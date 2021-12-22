@@ -25,7 +25,8 @@ async def create_room(
     room_in: RoomCreate,
     db: Session = Depends(get_db)
 ) -> Any:
-    room_in.code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    if not room_in.code:
+        room_in.code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     try:
         created_room = crud_room.create(obj_in=room_in, db=db)
     except IntegrityError as error:
