@@ -5,3 +5,4 @@ sqlalchemy-utils==0.37.5
 psycopg2-binary==2.8.6
 alembic==1.6.5
 pytest==6.2.4
+spotipy==2.19.0

@@ -4,7 +4,7 @@
 import random
 import string
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -56,7 +56,7 @@ async def get_room_by_code(
     return room
 
 
-@router.get('/host-id/{host_id}', response_model=Room)
+@router.get('/host-id/', response_model=Room)
 async def get_room_by_host_id(
     host_id: int,
     db: Session = Depends(get_db)
