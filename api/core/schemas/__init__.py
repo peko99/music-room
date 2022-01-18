@@ -3,4 +3,3 @@
 
 from .users import User, UserCreate, UserUpdate
 from .rooms import Room, RoomCreate, RoomUpdate
-from .spotify import Spotify, SpotifyCreate, SpotifyUpdate

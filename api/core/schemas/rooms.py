@@ -10,6 +10,8 @@ class RoomBase(BaseModel):
     code: Optional[str]
     number_of_votes: Optional[int]
     guests_can_pause: Optional[bool]
+    song_id: Optional[str]
+    current_votes: Optional[int]
 
 
 class RoomCreate(RoomBase):

@@ -14,5 +14,7 @@ class Room(Base):
     host_id = Column(Integer, ForeignKey('users.id'))
     number_of_votes = Column(Integer)
     guests_can_pause = Column(Boolean)
+    song_id = Column(String)
+    current_votes = Column(Integer)
 
     users = relationship('User', back_populates='room')

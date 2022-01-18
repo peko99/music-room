@@ -3,4 +3,3 @@
 
 from .users import User
 from .rooms import Room
-from .spotify import Spotify
